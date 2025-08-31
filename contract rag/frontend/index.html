@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contract Q&A</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      background: linear-gradient(120deg, #e8ecfc 0%, #f5f9ff 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 550px;
+      margin: 3rem auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 2rem 2rem 2.5rem;
+    }
+    h1 {
+      text-align: center;
+      color: #2256ae;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      letter-spacing: 1px;
+    }
+    .input-box {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 0.75rem;
+      font-size: 1.08rem;
+      border: 1.5px solid #c6d6f2;
+      border-radius: 6px;
+      transition: border-color 0.2s;
+      background: #f8fbff;
+    }
+    input[type="text"]:focus {
+      border-color: #2256ae;
+      outline: none;
+    }
+    button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1.08rem;
+      background: #2256ae;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #163e74;
+    }
+    #answer {
+      margin-top: 2rem;
+      padding: 1.3rem;
+      background: #f8fbff;
+      border-radius: 7px;
+      box-shadow: 0 3px 14px rgba(34,86,174,0.09);
+      font-size: 1.05rem;
+      line-height: 1.5;
+      white-space: pre-line;
+      border-left: 4px solid #2256ae;
+      min-height: 80px;
+      color: #222;
+    }
+    @media (max-width:600px) {
+      .container {
+        max-width: 95vw;
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 1.4rem;
+      }
+      #answer {
+        font-size: .95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Contract Q&A</h1>
+    <div class="input-box">
+      <input
+        type="text"
+        id="question"
+        placeholder="Enter your question about contracts here"
+      />
+      <button onclick="askQuestion()">Ask</button>
+    </div>
+    <div id="answer">Your answer will appear here.</div>
+  </div>
+
+  <script>
+    async function askQuestion() {
+      const questionInput = document.getElementById("question");
+      const answerDiv = document.getElementById("answer");
+      const question = questionInput.value.trim();
+
+      if (!question) {
+        answerDiv.textContent = "Please enter a question.";
+        return;
+      }
+      answerDiv.textContent = "Fetching answer, please wait...";
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          answerDiv.textContent = data.answer;
+        } else {
+          answerDiv.textContent = "Error: " + (data.error || "Unknown error");
+        }
+      } catch (error) {
+        answerDiv.textContent = "Network error: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
