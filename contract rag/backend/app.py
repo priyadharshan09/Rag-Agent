@@ -5,6 +5,7 @@ import numpy as np
 import json
 from sentence_transformers import SentenceTransformer
 import google.generativeai as genai
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -20,7 +21,8 @@ with open("D:/DS/Agreement/all_pdfs_chunks.json", "r", encoding="utf-8") as f:
     chunks = json.load(f)
 
 # Configure Gemini API key (replace with your key or environment variable)
-genai.configure(api_key="AIzaSyDN_jqSZiv0K79Paddz9-qTtdQlwiXx2AY")
+api_key = os.getenv("API_KEY")
+genai.configure(api_key=api_key)
 gmodel = genai.GenerativeModel("gemini-1.5-flash")
 
 def embed_query(query):

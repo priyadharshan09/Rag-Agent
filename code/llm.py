@@ -3,6 +3,7 @@ import faiss
 import numpy as np
 import json
 from sentence_transformers import SentenceTransformer
+import os
 
 # Load the embedding model (same one used for FAISS index)
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -15,7 +16,9 @@ with open("D:/DS/Agreement/all_pdfs_chunks.json", "r", encoding="utf-8") as f:
     chunks = json.load(f)
 
 # Configure Gemini with your API key
-genai.configure(api_key="AIzaSyDN_jqSZiv0K79Paddz9-qTtdQlwiXx2AY")
+
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
 gmodel = genai.GenerativeModel("gemini-1.5-flash")
 
 def embed_query(query):
